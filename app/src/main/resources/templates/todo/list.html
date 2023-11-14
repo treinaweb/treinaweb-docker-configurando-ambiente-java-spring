@@ -1,0 +1,61 @@
+<!doctype html>
+<html th:replace="~{base :: layout (~{::title}, ~{::main})}">
+  <head>
+    <title>Lista de Tarefas</title>
+  </head>
+  <body>
+    <main>
+      <h1>Lista de Tarefas</h1>
+
+      <table class="table" th:unless="${#lists.isEmpty(todos)}">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Título</th>
+            <th scope="col">Criado em</th>
+            <th scope="col">Data de entrega</th>
+            <th scope="col">Finalizado em</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="todo : ${todos}">
+            <th scope="row" th:text="${todo.id}">1</th>
+            <td th:text="${todo.title}">Mark</td>
+            <td th:text="${#temporals.format(todo.createdAt)}">Otto</td>
+            <td th:text="${#temporals.format(todo.deadline)}">@mdo</td>
+            <td th:text="${#temporals.format(todo.fineshedAt)} ?: '-'">@mdo</td>
+            <td>
+              <form class="d-inline" th:action="@{/finish/{id}(id=${todo.id})}" method="post">
+                <button 
+                  type="submit" 
+                  class="btn btn-sm btn-primary"
+                  th:classappend="${todo.fineshedAt} ? 'disabled' : ''"
+                >
+                  Concluir
+                </button>
+              </form>
+              <a 
+                th:href="@{/edit/{id}(id=${todo.id})}" 
+                class="btn btn-sm btn-secondary"
+                th:classappend="${todo.fineshedAt} ? 'disabled' : ''"
+              >
+                Editar
+              </a>
+              <a 
+                th:href="@{/delete/{id}(id=${todo.id})}"
+                class="btn btn-sm btn-danger"
+              >
+                Excluir
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p th:if="${#lists.isEmpty(todos)}">Nenhuma tarefa cadastrada</p>
+
+      <a th:href="@{/create}" class="btn btn-primary">Nova tarefa</a>
+    </main>
+  </body>
+</html>
